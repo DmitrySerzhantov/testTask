@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree View</title>
+    <style>
+        .tree {
+            list-style: none;
+            padding-left: 20px;
+        }
+        .tree li {
+            margin-bottom: 10px;
+            list-style: none;
+            cursor: pointer;
+        }
+        .tree li ul {
+            display: none;
+            margin-left: 20px;
+            padding-left: 0;
+            list-style: none;
+            cursor: pointer;
+        }
+        .tree li.open > ul {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <ul id="tree" class="tree"></ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const data = {
+                "services": [
+                    { "id": 1, "head": null, "name": "Проф.осмотр", "node": 0, "price": 100.0, "sorthead": 20 },
+                    { "id": 2, "head": null, "name": "Хирургия", "node": 1, "price": 0.0, "sorthead": 10 },
+                    { "id": 3, "head": 2, "name": "Удаление зубов", "node": 1, "price": 0.0, "sorthead": 10 },
+                    { "id": 4, "head": 3, "name": "Удаление зуба", "node": 0, "price": 800.0, "sorthead": 10 },
+                    { "id": 5, "head": 3, "name": "Удаление 8ого зуба", "node": 0, "price": 1000.0, "sorthead": 30 },
+                    { "id": 6, "head": 3, "name": "Удаление осколка зуба", "node": 0, "price": 2000.0, "sorthead": 20 },
+                    { "id": 7, "head": 2, "name": "Хирургические вмешательство", "node": 0, "price": 200.0, "sorthead": 10 },
+                    { "id": 8, "head": 2, "name": "Имплантация зубов", "node": 1, "price": 0.0, "sorthead": 20 },
+                    { "id": 9, "head": 8, "name": "Коронка", "node": 0, "price": 3000.0, "sorthead": 10 },
+                    { "id": 10, "head": 8, "name": "Слепок челюсти", "node": 0, "price": 500.0, "sorthead": 20 }
+                ]
+            };
+
+            function buildTree(data, parentId, parentElement) {
+                const ul = document.createElement("ul");
+                data.forEach(item => {
+                    if (item.head === parentId) {
+                        const li = document.createElement("li");
+                        li.textContent = `${item.name} (${item.price})`;
+                        if (item.node === 1) {
+                            const toggleIcon = document.createElement("span");
+                            toggleIcon.textContent = "🔽";
+                            toggleIcon.classList.add("toggle");
+                            toggleIcon.addEventListener("click", () => {
+                                li.classList.toggle("open");
+                            });
+                            li.insertBefore(toggleIcon, li.firstChild);
+                            buildTree(data, item.id, li);
+                        }
+                        ul.appendChild(li);
+                    }
+                });
+                parentElement.appendChild(ul);
+            }
+
+            const treeContainer = document.getElementById("tree");
+            buildTree(data.services, null, treeContainer);
+        });
+    </script>
+</body>
+</html>
+
